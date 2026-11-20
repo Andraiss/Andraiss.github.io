@@ -195,10 +195,6 @@ section { margin-top: var(--section-gap); }
 footer { margin: var(--section-gap) 0 0; padding: 20px 0 28px; border-top: var(--rule) solid var(--line); color: var(--muted); }
 footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
-/* Animation CREO en boucle */
-.loop { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--paper-2); border-radius: var(--radius); }
-.more { margin: 10px 0 0; font-size: .95rem; color: var(--muted); }
-
 /* =========================================================
    TÉLÉPHONE
    ========================================================= */
@@ -304,9 +300,7 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
       <h2>Assemblage sous CREO</h2>
       <p>La maquette complète du robot.</p>
     </div>
-    <!-- Animation en boucle, chargée seulement quand on arrive dessus -->
-    <video class="loop" src="images/creo.mp4" poster="images/creo-poster.jpg" width="960" height="540" muted loop playsinline preload="none" aria-label="Animation de la cinématique sous CREO"></video>
-    <p class="more"><a href="https://youtu.be/etnOgcKjBmw">Voir l'animation complète</a></p>
+    <div class="yt" data-id="etnOgcKjBmw" data-title="Animation de l'assemblage CREO"></div>
   </section>
 
   <!-- ============ 5. ÉVOLUTION ============ -->
@@ -408,16 +402,6 @@ document.querySelectorAll('.yt').forEach(function (box) {
     box.innerHTML = '';
     box.appendChild(f);
   }, { once: true });
-});
-
-/* Animation CREO : lecture seulement quand elle est visible */
-document.querySelectorAll('video.loop').forEach(function (v) {
-  if (!('IntersectionObserver' in window)) { v.preload = 'auto'; v.play(); return; }
-  new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) {
-      if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); }
-    });
-  }, { rootMargin: '200px' }).observe(v);
 });
 
 /* Ferme le menu Projets quand on clique ailleurs */
