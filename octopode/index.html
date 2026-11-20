@@ -195,6 +195,10 @@ section { margin-top: var(--section-gap); }
 footer { margin: var(--section-gap) 0 0; padding: 20px 0 28px; border-top: var(--rule) solid var(--line); color: var(--muted); }
 footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
 
+/* Animation CREO en boucle */
+.loop { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; background: var(--paper-2); border-radius: var(--radius); }
+.more { margin: 10px 0 0; font-size: .95rem; color: var(--muted); }
+
 /* =========================================================
    TÉLÉPHONE
    ========================================================= */
@@ -244,20 +248,20 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
 
   <!-- ============ 1. EN-TÊTE ============ -->
   <div class="hero">
-    <p class="kicker mono">Club de robotique · INSA Toulouse · Toulouse Robot Race <span class="todo">ANNÉE</span></p>
+    <p class="kicker mono">Toulouse Robot Race 2026</p>
     <div class="hero-row">
       <div>
-        <h1>Octopode</h1>
-        <p class="sub">Robot à huit pattes, mécanisme de Jansen</p>
+        <h1>Robot Multipattes</h1>
+        <p class="sub">Robot à huit pattes basé sur le mécanisme de Jansen</p>
       </div>
       <div class="result" title="Classement à la compétition"><b>1<sup style="font-size:.5em">er</sup></b><span>sur 6</span></div>
     </div>
-    <p class="pitch">Un robot qui marche sur huit pattes, sans aucune roue, pour parcourir 6 mètres en ligne droite le plus vite possible. J'en ai conçu toute la mécanique.</p>
+    <p class="pitch">Un robot qui marche sur huit pattes, sans aucune roue ni sphère, pour parcourir 6 mètres en ligne droite le plus vite possible.</p>
 
     <dl class="cartouche">
       <div class="role"><dt class="mono">Mon rôle</dt><dd>Conception de toute la mécanique</dd></div>
-      <div><dt class="mono">Élec et info</dt><dd>Un autre étudiant</dd></div>
-      <div><dt class="mono">CAO</dt><dd>CREO</dd></div>
+      <div><dt class="mono">Élec et info</dt><dd>Un autre membre</dd></div>
+      <div><dt class="mono">CAO</dt><dd>PTC CREO</dd></div>
     </dl>
   </div>
 
@@ -285,7 +289,7 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
         <p class="big">1<sup style="font-size:.5em">er</sup> <small>/ 6 robots</small></p>
         <dl>
           <dt class="mono">Compétition</dt>
-          <dd>Toulouse Robot Race, au Faire Festival <span class="todo">ANNÉE</span></dd>
+          <dd>Toulouse Robot Race, au Faire Festival 2026</dd>
           <dt class="mono">L'épreuve</dt>
           <dd>Parcourir 6 m en ligne droite le plus vite possible, sans roue ni sphère, avec toujours au moins trois appuis au sol.</dd>
         </dl>
@@ -298,9 +302,11 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
     <div class="sec-head">
       <span class="num">03</span>
       <h2>Assemblage sous CREO</h2>
-      <p>La maquette complète du robot, de la patte jusqu'au train d'engrenages.</p>
+      <p>La maquette complète du robot.</p>
     </div>
-    <div class="yt" data-id="etnOgcKjBmw" data-title="Animation de l'assemblage CREO"></div>
+    <!-- Animation en boucle, chargée seulement quand on arrive dessus -->
+    <video class="loop" src="images/creo.mp4" poster="images/creo-poster.jpg" width="960" height="540" muted loop playsinline preload="none" aria-label="Animation de la cinématique sous CREO"></video>
+    <p class="more"><a href="https://youtu.be/etnOgcKjBmw">Voir l'animation complète</a></p>
   </section>
 
   <!-- ============ 5. ÉVOLUTION ============ -->
@@ -363,7 +369,7 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
     <div class="sec-head">
       <span class="num">06</span>
       <h2>Contact</h2>
-      <p>Je cherche un PFE de 6 mois à partir de février 2027, en robotique, mécatronique ou conception mécanique.</p>
+      <p>Je recherche un stage de fin d’études (PFE) de 22 à 26 semaines, à partir de février 2027, en conception mécanique ou en mécatronique (bureau d’études, R&D, prototypage ou essais). Dans une entreprise de toute taille, de la start-up au grand groupe, à Toulouse, à Paris ou ailleurs en France.</p>
     </div>
     <div class="contact">
       <a class="mail" href="mailto:andreleberre14@gmail.com">andreleberre14@gmail.com</a>
@@ -402,6 +408,16 @@ document.querySelectorAll('.yt').forEach(function (box) {
     box.innerHTML = '';
     box.appendChild(f);
   }, { once: true });
+});
+
+/* Animation CREO : lecture seulement quand elle est visible */
+document.querySelectorAll('video.loop').forEach(function (v) {
+  if (!('IntersectionObserver' in window)) { v.preload = 'auto'; v.play(); return; }
+  new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); }
+    });
+  }, { rootMargin: '200px' }).observe(v);
 });
 
 /* Ferme le menu Projets quand on clique ailleurs */
