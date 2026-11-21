@@ -35,7 +35,7 @@
   --font-body:  "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono:  ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
   --size-body:  1.0625rem;  /* 17 px */
-  --size-hero:  clamp(3.4rem, 11vw, 7.5rem);
+  --size-hero:  clamp(3rem, 9vw, 5.6rem);
   --size-h2:    clamp(1.7rem, 4vw, 2.4rem);
   --size-small: 0.8rem;
 
@@ -48,6 +48,14 @@
   --radius:       2px;      /* arrondi des images et vidéos (0 = carré) */
   --rule:         1px;      /* épaisseur des traits */
   --step-ratio:   9 / 16;   /* format des vidéos d'étapes (9 / 16 = vertical, 16 / 9 = horizontal) */
+
+  /* Sommaire latéral */
+  --toc-width:    170px;    /* largeur du sommaire (ordinateur) */
+  --toc-gap:      56px;     /* espace entre sommaire et contenu */
+  --toc-top:      40px;     /* distance au haut de l'écran quand on défile */
+
+  /* Galerie */
+  --gallery-row:  1.33;     /* hauteur d'une photo verticale / sa largeur */
 
   /* Marqueurs « à compléter » (mettre none pour les masquer) */
   --todo-bg:      #ffe8d6;
@@ -97,14 +105,14 @@ a:hover { color: var(--accent); }
 /* =========================================================
    EN-TÊTE
    ========================================================= */
-.hero { padding: clamp(40px, 8vw, 88px) 0 0; }
+.hero { padding: clamp(32px, 5vw, 56px) 0 0; }
 .hero .kicker { color: var(--muted); margin: 0 0 14px; }
 .hero h1 {
   font-family: var(--font-title); font-weight: 700; font-size: var(--size-hero);
   line-height: .88; letter-spacing: -.01em; margin: 0; text-transform: uppercase;
 }
 .hero .sub { font-family: var(--font-title); font-weight: 500; font-size: clamp(1.3rem, 3vw, 1.75rem); margin: 10px 0 0; color: var(--muted); }
-.hero .pitch { max-width: 58ch; margin: 22px 0 0; font-size: 1.15rem; }
+.hero .pitch { max-width: 58ch; margin: 18px 0 0; font-size: 1.15rem; }
 
 .hero-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 24px; }
 .result {
@@ -114,6 +122,10 @@ a:hover { color: var(--accent); }
 }
 .result b { font-size: 2.6rem; font-weight: 700; }
 .result span { font-size: 1.1rem; font-weight: 500; }
+
+/* Photo d'ouverture */
+.hero-photo { margin: 28px 0 0; }
+.hero-photo img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: 50% 60%; border-radius: var(--radius); background: var(--paper-2); }
 
 /* Cartouche façon plan technique */
 .cartouche {
@@ -173,15 +185,29 @@ section { margin-top: var(--section-gap); }
 .steps h3 { font-family: var(--font-title); font-weight: 600; font-size: 1.3rem; margin: 12px 0 4px; }
 .steps p { margin: 0; color: var(--muted); font-size: .97rem; }
 
-/* Galerie */
-.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--gallery-gap); margin: 0; padding: 0; list-style: none; }
-.gallery figure { margin: 0; }
-.gallery a { display: block; overflow: hidden; border-radius: var(--radius); background: var(--paper-2); }
-.gallery img { aspect-ratio: 4 / 3; object-fit: cover; width: 100%; transition: transform .3s; }
+/* Galerie (4 colonnes, photos verticales sur 1 colonne, horizontales sur 2) */
+.gallery { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--gallery-gap); margin: 0; padding: 0; list-style: none; }
+.gallery li { display: flex; }
+.gallery figure { margin: 0; display: flex; flex-direction: column; width: 100%; }
+.gallery a { position: relative; display: block; flex: 1; overflow: hidden; border-radius: var(--radius); background: var(--paper-2); cursor: zoom-in; }
+.gallery li:not(.wide) a { aspect-ratio: 1 / var(--gallery-row); flex: none; }
+.gallery img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .35s; }
 .gallery a:hover img { transform: scale(1.03); }
-.gallery figcaption { font-size: .88rem; color: var(--muted); margin-top: 6px; }
+.gallery figcaption { font-size: .88rem; line-height: 1.35; color: var(--muted); margin-top: 7px; min-height: 2.7em; }
 .gallery .wide { grid-column: span 2; }
-.gallery .wide img { aspect-ratio: auto; height: 100%; }
+
+/* Visionneuse photo */
+.viewer { border: 0; padding: 0; margin: 0; max-width: 100vw; max-height: 100vh; width: 100vw; height: 100vh; background: rgba(15,16,17,.94); color: #fff; }
+.viewer::backdrop { background: transparent; }
+.viewer[open] { display: grid; grid-template-rows: 1fr auto; }
+.viewer .stage { display: grid; place-items: center; min-height: 0; padding: 56px 64px 8px; }
+.viewer img { max-width: min(100%, calc(100vw - 128px)); max-height: calc(100vh - 140px); width: auto; height: auto; object-fit: contain; }
+.viewer p { margin: 0; padding: 12px 20px 22px; text-align: center; font-size: .95rem; color: #d8d8d8; }
+.viewer button { position: absolute; border: 0; background: none; color: #fff; cursor: pointer; font: 400 2rem/1 var(--font-body); padding: 12px 16px; opacity: .8; }
+.viewer button:hover { opacity: 1; color: var(--accent); }
+.viewer .close { top: 8px; right: 10px; }
+.viewer .prev { left: 6px; top: 50%; transform: translateY(-50%); }
+.viewer .next { right: 6px; top: 50%; transform: translateY(-50%); }
 
 /* Contact */
 .contact { display: grid; grid-template-columns: 1.4fr 1fr; gap: var(--block-gap); align-items: end; }
@@ -194,6 +220,50 @@ section { margin-top: var(--section-gap); }
 
 footer { margin: var(--section-gap) 0 0; padding: 20px 0 28px; border-top: var(--rule) solid var(--line); color: var(--muted); }
 footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+/* =========================================================
+   SOMMAIRE
+   ========================================================= */
+.toc-label { color: var(--muted); margin: 0 0 12px; }
+.toc ol { list-style: none; margin: 0; padding: 0; border-left: var(--rule) solid var(--line); }
+.toc li a {
+  display: grid; grid-template-columns: 28px 1fr; align-items: baseline;
+  margin-left: -1px; padding: 7px 0 7px 14px; border-left: 2px solid transparent;
+  text-decoration: none; color: var(--muted); font-size: .95rem; line-height: 1.25;
+  transition: color .2s, border-color .2s, padding .2s;
+}
+.toc li a span { font-family: var(--font-mono); font-size: .72rem; color: var(--line); transition: color .2s; }
+.toc li a:hover { color: var(--ink); padding-left: 18px; }
+.toc li a.active { color: var(--ink); border-left-color: var(--accent); font-weight: 500; }
+.toc li a.active span { color: var(--accent); }
+.toc .bar { height: 2px; background: var(--line); margin-top: 18px; }
+.toc .bar i { display: block; height: 100%; width: 0; background: var(--accent); }
+.toc-toggle { display: none; }
+
+/* Ordinateur large : sommaire fixe à gauche */
+@media (min-width: 1180px) {
+  .wrap { max-width: calc(var(--page-width) + var(--toc-width) + var(--toc-gap)); }
+  .layout { display: grid; grid-template-columns: var(--toc-width) minmax(0, 1fr); gap: var(--toc-gap); }
+  .toc nav { position: sticky; top: var(--toc-top); padding-top: clamp(32px, 5vw, 56px); }
+}
+
+/* Écrans plus petits : bouton « Sommaire » flottant */
+@media (max-width: 1179px) {
+  .toc { position: fixed; right: 16px; bottom: 16px; z-index: 20; }
+  .toc-toggle {
+    display: inline-flex; align-items: center; gap: 8px; border: 0; cursor: pointer;
+    background: var(--ink); color: var(--paper); padding: 11px 16px; border-radius: 999px;
+    box-shadow: 0 6px 20px rgba(0,0,0,.18);
+  }
+  .toc-toggle::before { content: ""; width: 12px; height: 9px; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; background: linear-gradient(currentColor, currentColor) center / 100% 2px no-repeat; }
+  .toc nav {
+    position: absolute; right: 0; bottom: calc(100% + 10px); width: 230px;
+    background: var(--paper); border: var(--rule) solid var(--ink); padding: 16px 16px 14px;
+    opacity: 0; transform: translateY(6px); pointer-events: none; transition: opacity .18s, transform .18s;
+  }
+  .toc.open nav { opacity: 1; transform: none; pointer-events: auto; }
+  .toc .bar { display: none; }
+}
 
 /* =========================================================
    TÉLÉPHONE
@@ -211,11 +281,15 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
   .steps { grid-template-columns: 1fr 1fr; }
   .gallery { grid-template-columns: 1fr 1fr; }
   .gallery .wide { grid-column: span 2; }
+  .gallery .wide a { aspect-ratio: 3 / 2; flex: none; }
+  .viewer .stage { padding: 56px 8px 8px; }
+  .viewer .prev, .viewer .next { top: auto; bottom: 8px; transform: none; }
   .contact { grid-template-columns: 1fr; }
 }
 @media (max-width: 340px) {
   .steps { grid-template-columns: 1fr; }
 }
+html { scroll-padding-top: 16px; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; scroll-behavior: auto !important; } }
 </style>
 </head>
@@ -240,19 +314,43 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
   </div>
 </header>
 
-<main class="wrap">
+<div class="wrap layout">
+
+<!-- ============ SOMMAIRE ============ -->
+<aside class="toc">
+  <button class="toc-toggle mono" type="button" aria-expanded="false" aria-controls="toc-list">Sommaire</button>
+  <nav id="toc-list" aria-label="Sommaire">
+    <p class="toc-label mono">Sommaire</p>
+    <ol>
+      <li><a href="#intro"><span>00</span>Le robot</a></li>
+      <li><a href="#video"><span>01</span>En marche</a></li>
+      <li><a href="#coupe"><span>02</span>Jour de course</a></li>
+      <li><a href="#cao"><span>03</span>Sous CREO</a></li>
+      <li><a href="#evolution"><span>04</span>Prototypes</a></li>
+      <li><a href="#galerie"><span>05</span>Galerie</a></li>
+      <li><a href="#contact"><span>06</span>Contact</a></li>
+    </ol>
+    <div class="bar" aria-hidden="true"><i></i></div>
+  </nav>
+</aside>
+
+<main>
 
   <!-- ============ 1. EN-TÊTE ============ -->
-  <div class="hero">
+  <div class="hero" id="intro">
     <p class="kicker mono">Toulouse Robot Race 2026</p>
     <div class="hero-row">
       <div>
         <h1>Robot Multipattes</h1>
         <p class="sub">Robot à huit pattes basé sur le mécanisme de Jansen</p>
       </div>
-      <div class="result" title="Classement à la compétition"><b>1<sup style="font-size:.5em">er</sup></b><span>sur 6</span></div>
+      <div class="result" title="1er sur 6 à la Toulouse Robot Race 2026"><b>1<sup style="font-size:.5em">er</sup></b></div>
     </div>
     <p class="pitch">Un robot qui marche sur huit pattes, sans aucune roue ni sphère, pour parcourir 6 mètres en ligne droite le plus vite possible.</p>
+
+    <figure class="hero-photo">
+      <img src="images/main.jpg" srcset="images/main-800.jpg 800w, images/main.jpg 1600w" sizes="(min-width: 1180px) 1080px, 100vw" alt="Le robot multipattes posé sur une table, vu de trois quarts" width="1600" height="1088" fetchpriority="high">
+    </figure>
 
     <dl class="cartouche">
       <div class="role"><dt class="mono">Mon rôle</dt><dd>Conception de toute la mécanique</dd></div>
@@ -346,16 +444,23 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
       <span class="num">05</span>
       <h2>Galerie</h2>
     </div>
-    <!-- Chaque photo existe en 2 tailles (nom-800.jpg affichée, nom.jpg ouverte au clic).
-         Ajouter class="wide" sur un <li> pour qu'une photo prenne deux colonnes. -->
+    <!-- Chaque photo existe en 2 tailles (nom-800.jpg affichée, nom.jpg ouverte dans la visionneuse).
+         class="wide" = photo horizontale sur deux colonnes. Une rangée = 4 colonnes au total. -->
     <ul class="gallery">
-      <li><figure><a href="images/galerie-1.jpg"><img src="images/galerie-1-800.jpg" alt="" width="800" height="600" loading="lazy"></a><figcaption><span class="todo">Légende</span></figcaption></figure></li>
-      <li><figure><a href="images/galerie-2.jpg"><img src="images/galerie-2-800.jpg" alt="" width="800" height="600" loading="lazy"></a><figcaption><span class="todo">Légende</span></figcaption></figure></li>
-      <li><figure><a href="images/galerie-3.jpg"><img src="images/galerie-3-800.jpg" alt="" width="800" height="600" loading="lazy"></a><figcaption><span class="todo">Légende</span></figcaption></figure></li>
-      <li><figure><a href="images/galerie-4.jpg"><img src="images/galerie-4-800.jpg" alt="" width="800" height="600" loading="lazy"></a><figcaption><span class="todo">Légende</span></figcaption></figure></li>
-      <li><figure><a href="images/galerie-5.jpg"><img src="images/galerie-5-800.jpg" alt="" width="800" height="600" loading="lazy"></a><figcaption><span class="todo">Légende</span></figcaption></figure></li>
-      <li><figure><a href="images/galerie-6.jpg"><img src="images/galerie-6-800.jpg" alt="" width="800" height="600" loading="lazy"></a><figcaption><span class="todo">Légende</span></figcaption></figure></li>
+      <li class="wide"><figure><a href="images/galerie-2.jpg"><img src="images/galerie-2-800.jpg" alt="Côté du robot, quatre pattes de Jansen et leurs engrenages" width="800" height="600" loading="lazy"></a><figcaption>Un côté complet du robot, avec ses quatre pattes.</figcaption></figure></li>
+      <li><figure><a href="images/galerie-1.jpg"><img src="images/galerie-1-800.jpg" alt="Robot vu de dessus" width="600" height="800" loading="lazy"></a><figcaption>Vue de dessus. Le moteur, la transmission et l'électronique au centre.</figcaption></figure></li>
+      <li><figure><a href="images/galerie-3.jpg"><img src="images/galerie-3-800.jpg" alt="Support de transmission avec inserts en laiton" width="600" height="800" loading="lazy"></a><figcaption>Support de transmission imprimé en 3D, avec inserts filetés pour visser les paliers des engrenages.</figcaption></figure></li>
+      <li><figure><a href="images/galerie-4.jpg"><img src="images/galerie-4-800.jpg" alt="Le robot exposé le jour de la Toulouse Robot Race" width="600" height="800" loading="lazy"></a><figcaption>Le jour de la course, au Faire Festival.</figcaption></figure></li>
+      <li><figure><a href="images/galerie-6.jpg"><img src="images/galerie-6-800.jpg" alt="Face avant du robot" width="600" height="800" loading="lazy"></a><figcaption>Face avant.</figcaption></figure></li>
+      <li class="wide"><figure><a href="images/galerie-5.jpg"><img src="images/galerie-5-800.jpg" alt="Robot vu de trois quarts sur l'établi" width="800" height="600" loading="lazy"></a><figcaption>Vue de trois quarts.</figcaption></figure></li>
     </ul>
+    <dialog class="viewer" aria-label="Photo agrandie">
+      <div class="stage"><img alt=""></div>
+      <p></p>
+      <button class="close" type="button" aria-label="Fermer">×</button>
+      <button class="prev" type="button" aria-label="Photo précédente">‹</button>
+      <button class="next" type="button" aria-label="Photo suivante">›</button>
+    </dialog>
   </section>
 
   <!-- ============ 7. CONTACT ============ -->
@@ -375,6 +480,7 @@ footer .wrap { display: flex; justify-content: space-between; flex-wrap: wrap; g
   </section>
 
 </main>
+</div>
 
 <footer class="mono">
   <div class="wrap">
@@ -403,6 +509,58 @@ document.querySelectorAll('.yt').forEach(function (box) {
     box.appendChild(f);
   }, { once: true });
 });
+
+/* Sommaire : section active, barre de progression, bouton mobile */
+(function () {
+  var toc = document.querySelector('.toc');
+  var links = Array.prototype.slice.call(toc.querySelectorAll('ol a'));
+  var targets = links.map(function (a) { return document.querySelector(a.getAttribute('href')); });
+  var bar = toc.querySelector('.bar i');
+  function update() {
+    var y = window.scrollY + window.innerHeight * 0.35, current = 0;
+    targets.forEach(function (t, i) { if (t && t.offsetTop <= y) current = i; });
+    if (window.innerHeight + window.scrollY >= document.body.scrollHeight - 4) current = targets.length - 1;
+    links.forEach(function (a, i) { a.classList.toggle('active', i === current); });
+    var max = document.body.scrollHeight - window.innerHeight;
+    bar.style.width = (max > 0 ? Math.min(100, window.scrollY / max * 100) : 0) + '%';
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+  var btn = toc.querySelector('.toc-toggle');
+  btn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    var open = toc.classList.toggle('open');
+    btn.setAttribute('aria-expanded', open);
+  });
+  links.forEach(function (a) { a.addEventListener('click', function () { toc.classList.remove('open'); btn.setAttribute('aria-expanded', false); }); });
+  document.addEventListener('click', function (e) { if (!toc.contains(e.target)) { toc.classList.remove('open'); btn.setAttribute('aria-expanded', false); } });
+})();
+
+/* Galerie : visionneuse avec flèches et touche Échap */
+(function () {
+  var dlg = document.querySelector('.viewer');
+  if (!dlg || !dlg.showModal) return;
+  var items = Array.prototype.slice.call(document.querySelectorAll('.gallery a'));
+  var img = dlg.querySelector('img'), cap = dlg.querySelector('p'), idx = 0;
+  function show(i) {
+    idx = (i + items.length) % items.length;
+    img.src = items[idx].getAttribute('href');
+    img.alt = items[idx].querySelector('img').alt;
+    cap.textContent = items[idx].parentNode.querySelector('figcaption').textContent;
+  }
+  items.forEach(function (a, i) {
+    a.addEventListener('click', function (e) { e.preventDefault(); show(i); dlg.showModal(); });
+  });
+  dlg.querySelector('.close').onclick = function () { dlg.close(); };
+  dlg.querySelector('.prev').onclick = function () { show(idx - 1); };
+  dlg.querySelector('.next').onclick = function () { show(idx + 1); };
+  dlg.addEventListener('click', function (e) { if (e.target === dlg || e.target.classList.contains('stage')) dlg.close(); });
+  dlg.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowLeft') show(idx - 1);
+    if (e.key === 'ArrowRight') show(idx + 1);
+  });
+})();
 
 /* Ferme le menu Projets quand on clique ailleurs */
 document.addEventListener('click', function (e) {
